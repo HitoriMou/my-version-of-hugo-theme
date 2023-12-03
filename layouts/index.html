@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{{- $defaultColor := .Site.Params.defaultColor | default "auto" -}}
+
+{{/* allow website developer to enforce default dark mode */}}
+{{- if eq $defaultColor "dark" -}}
+<html lang="{{ .Site.LanguageCode }}" class="dark">
+{{- else if eq $defaultColor "light" -}}
+<html lang="{{ .Site.LanguageCode }}" class="light">
+{{- else -}}
+<html lang="{{ .Site.LanguageCode }}">
+{{- end -}}
+
+{{- partial "head.html" . -}}
+
+<body data-theme="{{ $defaultColor }}" class="notransition">
+    {{- partial "scriptsBodyStart.html" . -}}
+    {{- partial "header.html" . -}}
+    <div class="wrapper">
+        {{ partial "bio" . }}
+        <!-- Yeah ^ this bio has picture etc -->
+
+        <!-- <main class="page-content" aria-label="Content">
+            {{ range .Pages.GroupByDate "2006" }}
+            {{ $year := .Key }}
+            <h2 class="post-year">{{ $year }}</h2>
+    
+            {{/* create a list of posts for each month, with month as heading */}}
+    
+            {{ range .Pages }}
+    
+            {{ partial "postCard" . }}
+    
+            {{ end }} {{/* end range .Pages */}}
+    
+            {{ end }} {{/* end range .Pages.GroupByDate "2006" */}}
+    
+        </main> -->
+        <main aria-label="Content">
+            
+            <!-- <p> HERE EDITED </p> -->
+
+            <h3 class="posts-item-note" aria-label="Recent Posts"> Komorebi: </h3>
+            {{/* Show last 5 posts in reverse date order */}}
+            {{ $pagesToShow := where .Site.RegularPages "Type" "in" site.Params.mainSections }}
+            {{ $posts := $pagesToShow.ByDate.Reverse }}
+            {{ range $posts }}
+            {{ partial "postCard" . }}
+            {{ end }}
+            {{ if gt (len $posts) 5 }}
+            <!-- <p>
+                {{ range $firstSection := (where .Site.Sections "Section" "in" (first 1 (.Site.Params.mainSections))) }}
+                <a href="{{ $firstSection.Permalink }}">{{ T "home.see_all_posts" }}</a>
+                {{ end }}
+            </p> -->
+            {{ end }}
+        </main>
+    </div>
+    {{- partial "footer.html" . -}}
+    {{- partial "scriptsBodyEnd.html" . -}}
+</body>
+
+</html>
